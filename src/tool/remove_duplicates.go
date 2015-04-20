@@ -42,12 +42,12 @@ func (tool * RemoveDuplicates) Run(args []string, out io.Writer) (err error) {
         return err
     }
 
+    log.Println(len(model.Data.Object.Items))
+
     // Remove duplicates
-    var hash map[string]models.Item
-    log.Println(len(model.Data.Items))
-    for _,item := range model.Data.Items {
-        log.Println(item)
-        hash[item.Name] = item;
+    hash := map[string]models.Item{}
+    for _,item := range model.Data.Object.Items {
+        hash[item.Name] = item
     }
 
     cleanObject := models.Object{}
@@ -57,8 +57,16 @@ func (tool * RemoveDuplicates) Run(args []string, out io.Writer) (err error) {
         cleanObject.Items = append(cleanObject.Items,item)
     }
 
+    objDB := models.ObjectDB{}
+    objDB.Object = cleanObject
+
+    objModel := models.ObjectsModel{}
+    objModel.Data = objDB
+
+    log.Println(len(objModel.Data.Object.Items))
+
     // Write result
-    newFileData,err := xml.Marshal(cleanObject)
+    newFileData,err := xml.Marshal(objModel.Data)
     if err != nil {
         log.Println("Could not marshall cleaned xml",args)
         return err

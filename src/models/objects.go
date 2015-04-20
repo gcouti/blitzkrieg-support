@@ -42,7 +42,10 @@ func (objects *ObjectsModel) Load(file string) (err error){
         return err
     }
 
-    xml.Unmarshal(xmlData, &objects)
+    log.Println(len(xmlData))
+
+    objects.Data = ObjectDB{}
+    xml.Unmarshal(xmlData, &objects.Data)
     return nil
 }
 
